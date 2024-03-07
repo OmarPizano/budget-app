@@ -23,6 +23,11 @@ class Budget(db.Model):
     max = db.Column(db.Integer, nullable=False)
     current = db.Column(db.Integer, nullable=False)
 
+    def __init__(self, name, max, current):
+        self.name = name
+        self.max = max
+        self.current = current
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -268,6 +273,55 @@ def budgets_get_all():
     budgets = Budget.query.all()
     results = [budget.to_dict() for budget in budgets]
     return results, 200
+
+@app.route('/budgets/<int:id>', methods = ['GET'])
+def budgets_get_one(id):
+    budgets = db.session.get(Budget, id)
+    if not budgets:
+        abort(404)
+    return budgets.to_dict(), 200
+
+@app.route('/budgets', methods = ['POST'])
+def budgets_create():
+    data = request.get_json()
+    # mandatory params
+    expected_params = ['name', 'balance', 'current']
+    for param in expected_params:
+        if param not in data:
+            abort(400)
+    new_budget = Budget(data['name'], data['max'], data['current'])
+    db.session.add(new_budget)
+    db.session.commit()
+    return new_budget.to_dict(), 201
+
+@app.route('/budgets/<int:id>', methods = ['DELETE'])
+def budgets_delete(id):
+    budget_to_delete = db.session.get(Budget, id)
+    if not budget_to_delete:
+        abort(404)
+    db.session.delete(budget_to_delete)
+    db.session.commit()
+    return {}, 204
+
+@app.route('/budgets/<int:id>', methods = ['PATCH'])
+def budgets_update(id):
+    data = request.get_json()
+    # mandatory params
+    optional_params = ['name', 'balance', 'current']
+    selected_params = []
+    for param in optional_params:
+        if param in data:
+            selected_params.append(param)
+    if len(selected_params) == 0:
+        abort(400)
+    budget_to_update = db.session.get(Budget, id)
+    if not budget_to_update:
+        abort(404)
+    for param in selected_params:
+        setattr(budget_to_update, param, data[param])
+    db.session.add(budget_to_update)
+    db.session.commit()
+    return {}, 204
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
