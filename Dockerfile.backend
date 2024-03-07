@@ -1,4 +1,6 @@
 FROM python:latest
+RUN useradd -m -s /bin/bash python
+USER python
 WORKDIR /home/python
 COPY backend /home/python
 RUN pip install -r requirements.txt

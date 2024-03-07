@@ -15,10 +15,15 @@ steps:
     environment:
       DB_URL: 
         from_secret: DB_URL
-    dockerfile: ./Dockerfile.backend
-    commands:
-      - whoami
-      - echo $DB_URL
+    settings:
+      username:
+        from_secret: DOCKER_HUB_USERNAME
+      password:
+        from_secret: DOCKER_HUB_PASSWORD
+      repo:
+        from_secret: DOCKER_HUB_REPO
+      tags: 0.0.1
+      dockerfile: ./Dockerfile.backend
 
 trigger:
   branch:
