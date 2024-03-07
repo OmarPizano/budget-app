@@ -36,6 +36,10 @@ class Account(db.Model):
     name = db.Column(db.String(256), nullable=False)
     balance = db.Column(db.Integer, nullable=False)
 
+    def __init__(self, name, balance):
+        self.name = name
+        self.balance = balance
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -209,6 +213,55 @@ def accounts_get_all():
     accounts = Account.query.all()
     results = [account.to_dict() for account in accounts]
     return results, 200
+
+@app.route('/accounts/<int:id>', methods = ['GET'])
+def accounts_get_one(id):
+    accounts = db.session.get(Account, id)
+    if not accounts:
+        abort(404)
+    return accounts.to_dict(), 200
+
+@app.route('/accounts', methods = ['POST'])
+def accounts_create():
+    data = request.get_json()
+    # mandatory params
+    expected_params = ['name', 'balance']
+    for param in expected_params:
+        if param not in data:
+            abort(400)
+    new_account = Account(data['name'], data['balance'])
+    db.session.add(new_account)
+    db.session.commit()
+    return new_account.to_dict(), 201
+
+@app.route('/accounts/<int:id>', methods = ['DELETE'])
+def accounts_delete(id):
+    account_to_delete = db.session.get(Account, id)
+    if not account_to_delete:
+        abort(404)
+    db.session.delete(account_to_delete)
+    db.session.commit()
+    return {}, 204
+
+@app.route('/accounts/<int:id>', methods = ['PATCH'])
+def accounts_update(id):
+    data = request.get_json()
+    # mandatory params
+    optional_params = ['name', 'balance']
+    selected_params = []
+    for param in optional_params:
+        if param in data:
+            selected_params.append(param)
+    if len(selected_params) == 0:
+        abort(400)
+    account_to_update = db.session.get(Account, id)
+    if not account_to_update:
+        abort(404)
+    for param in selected_params:
+        setattr(account_to_update, param, data[param])
+    db.session.add(account_to_update)
+    db.session.commit()
+    return {}, 204
 
 @app.route('/budgets', methods = ['GET'])
 def budgets_get_all():
