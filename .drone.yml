@@ -1,0 +1,15 @@
+kind: pipeline
+type: docker
+name: test01
+
+steps:
+  - name: python-server
+    image: python:latest
+    commands:
+      - pip install -r requirements.txt
+      - echo "hola" > helloworld.txt
+      - python app.py
+
+trigger:
+  branch:
+    - main
