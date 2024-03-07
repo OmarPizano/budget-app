@@ -24,6 +24,7 @@ steps:
         from_secret: DOCKER_HUB_REPO
       tags: 0.0.2
       dockerfile: ./Dockerfile.backend
+      debug: true
 
 trigger:
   branch:
