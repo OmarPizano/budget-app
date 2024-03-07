@@ -202,7 +202,7 @@ def transactions_update(id):
     return {}, 204
 
 @app.route('/transactions/search/<string:pattern>', methods = ['GET'])
-def names_search(pattern):
+def transactions_search(pattern):
     transactions = db.session.query(Transaction).filter(func.lower(Transaction.description).contains(pattern.lower())).all()
     results = [transaction.to_dict() for transaction in transactions]
     return results, 200
