@@ -4,7 +4,7 @@ name: gen-images
 
 steps:
   - name: build-backend
-    image: docker
+    image: plugins/docker
     environment:
       DB_URL: 
         from_secret: DB_URL
