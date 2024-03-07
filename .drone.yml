@@ -10,7 +10,7 @@ steps:
   - name: build-backend
     image: plugins/docker
     volumes:
-      - name: dockersock
+      - name: docker
         path: /var/run/docker.sock
     environment:
       DB_URL: 
@@ -25,6 +25,11 @@ steps:
       tags: 0.0.3
       dockerfile: ./Dockerfile.backend
       debug: true
+
+volumes:
+  - name: docker
+    host:
+      path: /var/run/docker.sock
 
 trigger:
   branch:
