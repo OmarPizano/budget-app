@@ -1,14 +1,15 @@
 kind: pipeline
 type: docker
-name: test01
+name: gen-images
 
 steps:
-  - name: python-server
-    image: python:latest
+  - name: build-backend
+    image: docker
+    environment:
+      DB_URL: 
+        from_secret: DB_URL
     commands:
-      - pip install -r requirements.txt
-      - echo "hola" > helloworld.txt
-      - python app.py
+      - docker build -t backend-flask -f Dockerfile.backend .
 
 trigger:
   branch:
