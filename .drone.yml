@@ -2,31 +2,25 @@ kind: pipeline
 type: docker
 name: gen-images
 
-steps:
-  - name: build-backend
-    image: docker:dind
-    volumes:
-      - name: dockersock
-        path: /var/run
-    environment:
-      DB_URL: 
-        from_secret: DB_URL
-    commands:
-      - echo "waiting 5 secs for docker to start"
-      - sleep 5
-      - docker build -t backend-flask -f Dockerfile.backend .
-
-services:
-  - name: docker
-    image: docker:dind
-    privileged: true
-    volumes:
-      - name: dockersock
-        path: /var/run
+platform:
+  os: linux
+  arch: amd64
 
 volumes:
   - name: dockersock
-    temp: {}
+    host:
+      path: /var/run/docker.sock
+
+steps:
+  - name: build-backend
+    image: plugins/docker
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    environment:
+      DB_URL: 
+        from_secret: DB_URL
+    dockerfile: ./Dockerfile.backend
 
 trigger:
   branch:
