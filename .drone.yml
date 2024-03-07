@@ -4,12 +4,29 @@ name: gen-images
 
 steps:
   - name: build-backend
-    image: plugins/docker
+    image: docker:dind
+    volumes:
+      - name: dockersock
+        path: /var/run
     environment:
       DB_URL: 
         from_secret: DB_URL
     commands:
+      - echo "waiting 5 secs for docker to start"
+      - sleep 5
       - docker build -t backend-flask -f Dockerfile.backend .
+
+services:
+  - name: docker
+    image: docker:dind
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run
+
+volumes:
+  - name: dockersock
+    temp: {}
 
 trigger:
   branch:
