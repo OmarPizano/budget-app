@@ -1,4 +1,8 @@
 FROM python:latest
+
+ARG DB_URL
+ENV DB_URL $DB_URL
+
 RUN useradd -m -s /bin/bash python
 USER python
 WORKDIR /home/python
