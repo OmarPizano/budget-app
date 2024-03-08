@@ -24,7 +24,9 @@ steps:
         from_secret: DOCKER_HUB_REPO
       tags: latest
       dockerfile: ./Dockerfile.backend
-      debug: true
+      secret:
+        DB_URL:
+          from_secret: DB_URL
 
 volumes:
   - name: docker
