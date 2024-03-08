@@ -15,6 +15,8 @@ steps:
     environment:
       DB_URL: 
         from_secret: DB_URL
+    build_args_from_env:
+      - DB_URL
     settings:
       username:
         from_secret: DOCKER_HUB_USERNAME
@@ -24,9 +26,6 @@ steps:
         from_secret: DOCKER_HUB_REPO
       tags: latest
       dockerfile: ./Dockerfile.backend
-      secret:
-        DB_URL:
-          from_secret: DB_URL
 
 volumes:
   - name: docker
