@@ -15,9 +15,9 @@ steps:
     environment:
       DB_URL: 
         from_secret: DB_URL
-    build_args_from_env:
-      - DB_URL
     settings:
+      build_args_from_env:
+        - DB_URL
       username:
         from_secret: DOCKER_HUB_USERNAME
       password:
