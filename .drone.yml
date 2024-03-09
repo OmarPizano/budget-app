@@ -26,6 +26,10 @@ steps:
         from_secret: DOCKER_HUB_REPO
       tags: latest
       dockerfile: ./Dockerfile.backend
+    when:
+      paths:
+        include:
+          - backend/*
 
 volumes:
   - name: docker
