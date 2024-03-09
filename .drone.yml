@@ -29,7 +29,7 @@ steps:
     when:
       paths:
         include:
-          - backend/*
+          - backend/**
 
 volumes:
   - name: docker
